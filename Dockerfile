@@ -1,11 +1,13 @@
 FROM debian:testing
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update; \
-		apt-get install -y gnupg2 patch;
+		apt-get install -y gnupg2 patch ca-certificates;
 
-RUN apt-key adv --keyserver hkp://pgp.surfnet.nl:80 --recv-keys 0xD744D55EACDA69FF && \
-		echo "deb http://repos.fusiondirectory.org/fusiondirectory-releases/fusiondirectory-1.2/debian-jessie jessie main" > /etc/apt/sources.list.d/fusiondirectory-jessie.list && \
-		echo "deb http://repos.fusiondirectory.org/fusiondirectory-extra/debian-jessie jessie main" >> /etc/apt/sources.list.d/fusiondirectory-jessie.list && \
+RUN gpg --keyserver keys.gnupg.net --recv-key 0xD744D55EACDA69FF && \
+    gpg --export -a "FusionDirectory Project Signing Key <contact@fusiondirectory.org>" > FD-archive-key && \
+    apt-key add FD-archive-key && \
+		echo "deb http://repos.fusiondirectory.org/fusiondirectory-current/debian-stretch stretch main" > /etc/apt/sources.list.d/fusiondirectory-stretch.list && \
+		echo "deb http://repos.fusiondirectory.org/fusiondirectory-extra/debian-stretch stretch main" >> /etc/apt/sources.list.d/fusiondirectory-stretch.list && \
 		apt-get update
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y apache2 dumb-init \
